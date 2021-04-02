@@ -1,5 +1,12 @@
 #!/bin/bash
 
+set_winepath() {
+    if [ -n "$WINEPATH" ]; then
+        export PATH="$WINEPATH/bin:$PATH"
+        export LD_LIBRARY_PATH="$WINEPATH/lib:$WINEPATH/lib64:$WINEPATH/lib32:$LD_LIBRARY_PATH"
+    fi
+}
+
 check_env() {
     [ -z "$1" ] && echo "$2 is not set" && exit 1
 }
@@ -12,6 +19,7 @@ override_dll() {
     wine reg add "HKEY_CURRENT_USER\Software\Wine\DllOverrides" /v $1 /d native /f
 }
 
+set_winepath
 check_env "$WINEPREFIX" WINEPREFIX
 check_sanity "$WINEPREFIX" drive_c
 
@@ -61,4 +69,3 @@ wine regsvr32 msmpeg2vdec.dll
 wine64 regsvr32 colorcnv.dll
 wine64 regsvr32 msmpeg2adec.dll
 wine64 regsvr32 msmpeg2vdec.dll
-
